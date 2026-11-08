@@ -17,8 +17,18 @@ fetchButton.addEventListener('click', async () => {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const jsonResponse = await response.json();
-        console.log('Giphy API Data:', jsonResponse.data);
+        const gifsData = jsonResponse.data;
+
+        gifsData.forEach(gif => {
+            const imageUrl = gif.images.fixed_height.url;
+            gifContainer.innerHTML += `<img src="${imageUrl}" class="col-3 mb-3" alt="${gif.title}">`;
+        });
+
+        if (gifsData.length === 0) {
+            gifContainer.innerHTML = `<p class="text-center col-12">No GIFs found for "${searchTerm}". Try another keyword!</p>`;
+        }
     } catch (error) {
         console.error('Error fetching GIFs:', error);
+        gifContainer.innerHTML = `<p class="text-danger text-center col-12">Failed to load GIFs. Please try again later.</p>`;
     }
 });
